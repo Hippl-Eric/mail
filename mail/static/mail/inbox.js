@@ -43,16 +43,27 @@ function load_mailbox(mailbox) {
   fetch(`emails/${mailbox}`)
   .then(response => response.json())
   .then(data => {
-    console.log('Success:', data);
     data.forEach(email => {
 
       // Create an element for each email
       const emailDiv = document.createElement('div');
-      // TODO: Add timestamp
-      emailDiv.innerHTML = `${email.sender} ${email.subject}`;
+
+      // Determine email label. Set recipient for sent, or sender for inbox
+      let emailLabel = ""
+      if (mailbox == 'sent') {
+        emailLabel = email.recipients[0]
+      }
+      else {
+        emailLabel = email.sender
+      }
+
+      // Add attributes
+      emailDiv.innerHTML = `${emailLabel} ${email.subject} ${email.timestamp}`;
       emailDiv.addEventListener('click', load_email);
       emailDiv.setAttribute('id', email.id)
       emailDiv.setAttribute('class', 'email-box');
+
+      // Check if email is read and add appropriate class
       if (email.read === true) {
         emailDiv.classList.add('read')
       }
