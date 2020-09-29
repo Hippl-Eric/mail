@@ -11,24 +11,29 @@
     <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
     <hr>
 
-    <div id="emails-view">
-    </div>
+    <div id="view-container">
+        <div id="emails-view">
+        </div>
 
-    <div id="compose-view">
-        <h3>New Email</h3>
-        <form id="compose-form">
-            <div class="form-group">
-                From: <input disabled class="form-control" value="{{ request.user.email }}">
-            </div>
-            <div class="form-group">
-                To: <input name="recipients" id="compose-recipients" class="form-control">
-            </div>
-            <div class="form-group">
-                <input name="subject" class="form-control" id="compose-subject" placeholder="Subject">
-            </div>
-            <textarea name="body" class="form-control" id="compose-body" placeholder="Body"></textarea>
-            <input type="submit" class="btn btn-primary"/>
-        </form>
+        <div id="compose-view">
+            <h3>New Email</h3>
+            <form id="compose-form">
+                <div class="form-group">
+                    From: <input disabled class="form-control" value="{{ request.user.email }}">
+                </div>
+                <div class="form-group">
+                    To: <input name="recipients" id="compose-recipients" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input name="subject" class="form-control" id="compose-subject" placeholder="Subject">
+                </div>
+                <textarea name="body" class="form-control" id="compose-body" placeholder="Body"></textarea>
+                <input type="submit" class="btn btn-primary"/>
+            </form>
+        </div>
+
+        <div id="read-view">
+        </div>
     </div>
 {% endblock %}
 

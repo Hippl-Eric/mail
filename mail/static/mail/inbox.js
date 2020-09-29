@@ -17,11 +17,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+// Helper function to display view and hide other views
+function show_view(idView) {
+  allViews = document.getElementById('view-container').children;
+  for (const view of allViews) {
+    if (view.id === idView) {view.style.display = 'block';}
+    else {view.style.display = 'none';}
+  };
+}
+
 function compose_email() {
 
   // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'block';
+  show_view('compose-view');
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
@@ -33,8 +41,7 @@ function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
   const emailView = document.querySelector('#emails-view');
-  emailView.style.display = 'block';
-  document.querySelector('#compose-view').style.display = 'none';
+  show_view('emails-view')
 
   // Show the mailbox name
   emailView.innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -64,12 +71,8 @@ function load_mailbox(mailbox) {
       emailDiv.setAttribute('class', 'email-box');
 
       // Check if email is read and add appropriate class
-      if (email.read === true) {
-        emailDiv.classList.add('read')
-      }
-      else {
-        emailDiv.classList.add('unread')
-      }
+      if (email.read === true) {emailDiv.classList.add('read')}
+      else {emailDiv.classList.add('unread')}
 
       // Append email to the page
       emailView.append(emailDiv);
