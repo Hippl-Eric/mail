@@ -6,8 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
+  // Compose email button
+  document.querySelector('#compose-form').onsubmit = function() {
+    send_email();
+    return false;
+  };
+
   // By default, load the inbox
   load_mailbox('inbox');
+
 });
 
 function compose_email() {
@@ -20,7 +27,7 @@ function compose_email() {
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
-}
+};
 
 function load_mailbox(mailbox) {
   
@@ -30,4 +37,37 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
-}
+};
+
+function send_email() {
+  console.log("SEND EMAIL!");
+  
+  // Grab the form elements
+  const recipients = document.querySelector('#compose-recipients');
+  const subject = document.querySelector('#compose-subject');
+  const body = document.querySelector('#compose-body');
+
+  // Submit form values for validation and 
+  fetch('/emails', {
+    method: 'POST',
+    body: JSON.stringify({
+      recipients: recipients.value,
+      subject: subject.value,
+      body: body.value,
+    })
+  })
+  .then((response) => {
+
+    // Email sent successfully 
+    if (response.status === 201) {
+      console.log("SUCCESS");
+      load_mailbox('sent');
+    }
+
+    // Error
+    else {
+      console.log("ERROR");
+    }
+  })
+ 
+};
