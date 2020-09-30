@@ -145,8 +145,25 @@ function load_email() {
     const bodyDiv = document.createElement('div');
     bodyDiv.innerHTML = email.body;
 
+    // Archive/Unarchive button
+    archButton = document.createElement('button');
+    archButton.setAttribute('class', 'btn btn-sm btn-outline-primary');
+    archButton.addEventListener('click', () => archive(emailID));
+    if (email.archived == true) {
+      archButton.innerHTML = 'Unarchive';
+    }
+    else {
+      archButton.innerHTML = "Archive";
+    };
+
+    // Reply Button
+    replyButton = document.createElement('button');
+    replyButton.setAttribute('class', 'btn btn-primary');
+    replyButton.addEventListener('click', () => reply(emailID));
+    replyButton.innerHTML = 'Reply';
+
     // Add to page
-    emailPage.append(senderDiv, recipientsDiv, timeDiv, subjectDiv, bodyDiv);
+    emailPage.append(archButton, senderDiv, recipientsDiv, timeDiv, subjectDiv, bodyDiv, replyButton);
     readView.append(emailPage);
 
     // Mark email as read
@@ -158,3 +175,11 @@ function load_email() {
     })
   });
 };
+
+function archive(emailID) {
+  console.log(`Archive: ${emailID}`);
+}
+
+function reply(emailID) {
+  console.log(`Reply: ${emailID}`);
+}
