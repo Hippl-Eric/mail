@@ -119,10 +119,10 @@ function load_email() {
   // Show the read email view and clear any previous content
   readView = document.querySelector('#read-view');
   readView.innerHTML = "";
-  show_view('read-view')
+  show_view('read-view');
 
   // Grab id from email
-  const emailID = parseInt(this.id)
+  const emailID = parseInt(this.id);
 
   // Fetch email contents
   fetch(`/emails/${emailID}`)
@@ -148,11 +148,13 @@ function load_email() {
     // Add to page
     emailPage.append(senderDiv, recipientsDiv, timeDiv, subjectDiv, bodyDiv);
     readView.append(emailPage);
-  })
 
-  // Mark email as read
-  // fetch(`/emails/${emailID}`, {
-  //   method = 'PUT',
-    // Read?
-  // })
-}
+    // Mark email as read
+    return fetch(`/emails/${emailID}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        read: true,
+      })
+    })
+  });
+};
