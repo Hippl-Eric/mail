@@ -17,8 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-// Helper function to display view and hide other views
 function show_view(idView) {
+/* Helper function to display specified view and hide other views*/
+
   allViews = document.getElementById('view-container').children;
   for (const view of allViews) {
     if (view.id === idView) {view.style.display = 'block';}
@@ -113,5 +114,37 @@ function send_email() {
 };
 
 function load_email() {
+/* Show email after user clicks */
   console.log('EMAIL CLICKED')
+
+  // Show the read email view
+  show_view('read-view')
+
+  // Grab id from email
+  const emailID = parseInt(this.id)
+
+  // Fetch email contents
+  fetch(`/emails/${emailID}`)
+  .then(response => response.json())
+  .then(email => {
+
+    // Create element and add to page
+    const emailPage = document.createElement('div');
+    emailPage.setAttribute('class', 'email-page');
+    for (const param in email) {
+      div = document.createElement('div');
+      div.innerHTML = param;
+      emailPage.append(div);
+    }
+    document.querySelector('#read-view').append(emailPage);
+
+})
+
+
+
+  // Mark email as read
+  // fetch(`/emails/${emailID}`, {
+  //   method = 'PUT',
+    // Read?
+  // })
 }
