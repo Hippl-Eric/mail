@@ -115,9 +115,10 @@ function send_email() {
 
 function load_email() {
 /* Show email after user clicks */
-  console.log('EMAIL CLICKED')
 
-  // Show the read email view
+  // Show the read email view and clear any previous content
+  readView = document.querySelector('#read-view');
+  readView.innerHTML = "";
   show_view('read-view')
 
   // Grab id from email
@@ -128,19 +129,26 @@ function load_email() {
   .then(response => response.json())
   .then(email => {
 
-    // Create element and add to page
+    // Create element
     const emailPage = document.createElement('div');
     emailPage.setAttribute('class', 'email-page');
-    for (const param in email) {
-      div = document.createElement('div');
-      div.innerHTML = param;
-      emailPage.append(div);
-    }
-    document.querySelector('#read-view').append(emailPage);
 
-})
+    // Email content
+    const senderDiv = document.createElement('div');
+    senderDiv.innerHTML = `From: ${email.sender}`;
+    const recipientsDiv = document.createElement('div');
+    recipientsDiv.innerHTML = `To: ${email.recipients}`;
+    const timeDiv = document.createElement('div');
+    timeDiv.innerHTML = email.timestamp;
+    const subjectDiv = document.createElement('div');
+    subjectDiv.innerHTML = `Subject: ${email.subject}`;
+    const bodyDiv = document.createElement('div');
+    bodyDiv.innerHTML = email.body;
 
-
+    // Add to page
+    emailPage.append(senderDiv, recipientsDiv, timeDiv, subjectDiv, bodyDiv);
+    readView.append(emailPage);
+  })
 
   // Mark email as read
   // fetch(`/emails/${emailID}`, {
