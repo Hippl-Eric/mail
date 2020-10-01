@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 from .models import User, Email
 
@@ -76,17 +77,22 @@ def compose(request):
 def mailbox(request, mailbox):
 
     # Filter emails returned based on mailbox
+    '''
+    Modified archive filter using "Q" object to allow archiving of sent emails.
+    https://docs.djangoproject.com/en/3.1/topics/db/queries/#complex-lookups-with-q-objects
+    Updated sent filter as well.
+    '''
     if mailbox == "inbox":
         emails = Email.objects.filter(
             user=request.user, recipients=request.user, archived=False
         )
     elif mailbox == "sent":
         emails = Email.objects.filter(
-            user=request.user, sender=request.user
+            user=request.user, sender=request.user, archived=False
         )
     elif mailbox == "archive":
         emails = Email.objects.filter(
-            user=request.user, recipients=request.user, archived=True
+            Q(recipients=request.user) | Q(sender=request.user), user=request.user, archived=True
         )
     else:
         return JsonResponse({"error": "Invalid mailbox."}, status=400)
