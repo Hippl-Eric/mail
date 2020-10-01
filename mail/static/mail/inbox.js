@@ -146,9 +146,12 @@ function load_email() {
     bodyDiv.innerHTML = email.body;
 
     // Archive/Unarchive button
-    archButton = document.createElement('button');
+    const archButton = document.createElement('button');
+    archButton.setAttribute('id', 'archive-btn');
     archButton.setAttribute('class', 'btn btn-sm btn-outline-primary');
-    archButton.addEventListener('click', () => archive(emailID));
+    archButton.addEventListener('click', function() {
+      archive(emailID);
+    });
     if (email.archived == true) {
       archButton.innerHTML = 'Unarchive';
     }
@@ -157,7 +160,7 @@ function load_email() {
     };
 
     // Reply Button
-    replyButton = document.createElement('button');
+    const replyButton = document.createElement('button');
     replyButton.setAttribute('class', 'btn btn-primary');
     replyButton.addEventListener('click', () => reply(emailID));
     replyButton.innerHTML = 'Reply';
@@ -167,17 +170,41 @@ function load_email() {
     readView.append(emailPage);
 
     // Mark email as read
-    return fetch(`/emails/${emailID}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        read: true,
+    if (email.read == false) {
+      return fetch(`/emails/${emailID}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          read: true,
+        })
       })
-    })
+    };
   });
 };
 
 function archive(emailID) {
+  /* Toggle an emails archive state and update archive button */
   console.log(`Archive: ${emailID}`);
+  const btn = document.querySelector('#archive-btn');
+
+  // Determine if email is archived and toggle button label
+  fetch(`/emails/${emailID}`)
+  .then(response => response.json())
+  .then(data => {
+    if (data.archived == true) {
+      btn.innerHTML = 'Archive';
+    }
+    else {
+      btn.innerHTML = "Unarchive";
+    };
+    
+    // Toggle and set emails archive bool
+    return fetch(`/emails/${emailID}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        archived: !data.archived,
+      })
+    })
+  })
 }
 
 function reply(emailID) {
