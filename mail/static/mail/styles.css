@@ -18,3 +18,7 @@ textarea {
 .unread {
     background-color: white;
 }
+
+.email-page > div {
+    white-space: pre-wrap; /*https://stackoverflow.com/a/40426477*/
+}

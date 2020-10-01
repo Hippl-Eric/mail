@@ -162,7 +162,9 @@ function load_email() {
     // Reply Button
     const replyButton = document.createElement('button');
     replyButton.setAttribute('class', 'btn btn-primary');
-    replyButton.addEventListener('click', () => reply(emailID));
+    replyButton.addEventListener('click', function() {
+      reply(emailID);
+    });
     replyButton.innerHTML = 'Reply';
 
     // Add to page
@@ -183,7 +185,7 @@ function load_email() {
 
 function archive(emailID) {
   /* Toggle an emails archive state and update archive button */
-  console.log(`Archive: ${emailID}`);
+
   const btn = document.querySelector('#archive-btn');
 
   // Determine if email is archived and toggle button label
@@ -197,7 +199,7 @@ function archive(emailID) {
       btn.innerHTML = "Unarchive";
     };
     
-    // Toggle and set emails archive bool
+    // Update email's archive bool
     return fetch(`/emails/${emailID}`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -209,4 +211,22 @@ function archive(emailID) {
 
 function reply(emailID) {
   console.log(`Reply: ${emailID}`);
+  // Grab email
+  fetch(`/emails/${emailID}`)
+  .then(response => response.json())
+  .then(data => {
+
+    // Pre-fill the "To:" field
+    document.querySelector('#compose-recipients').setAttribute('value', data.sender);
+
+    // Pre-fill the "Subject" field
+    document.querySelector('#compose-subject').setAttribute('value', `RE: ${data.subject.replace("RE: ", "")}`);
+
+    // Load previous message in body field
+    const bodyVal = `On ${data.timestamp} ${data.sender} wrote:\n${data.body}\n\n`;
+    document.querySelector('#compose-body').innerHTML = bodyVal;
+
+    // Show compose view and hide other views
+    show_view('compose-view');
+  });
 }
