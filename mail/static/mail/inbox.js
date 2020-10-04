@@ -27,9 +27,9 @@ function show_view(idView) {
     }
     else {
       view.style.display = 'none';
-    }
+    };
   };
-}
+};
 
 function compose_email() {
 /* Load the compose email form */
@@ -71,21 +71,32 @@ function load_mailbox(mailbox) {
         const emailDiv = document.createElement('div');
 
         // Determine email label. Set recipient for sent, or sender for inbox
-        let emailLabel = ""
+        let address = ""
         if (mailbox == 'sent') {
-          emailLabel = email.recipients[0]
+          address = email.recipients[0]
         }
         else {
-          emailLabel = email.sender
+          address = email.sender
         }
 
+        // Email Content
+        const addressDiv = document.createElement('span');
+        addressDiv.innerHTML = `<b>${address}</b>`;
+        addressDiv.setAttribute('class', 'address');
+        const subjectDiv = document.createElement('span');
+        subjectDiv.innerHTML = email.subject;
+        subjectDiv.setAttribute('class', 'subject');
+        const timeDiv = document.createElement('span');
+        timeDiv.innerHTML = email.timestamp;
+        timeDiv.setAttribute('class', 'time');
+
         // Add attributes
-        emailDiv.innerHTML = `${emailLabel} ${email.subject} ${email.timestamp}`;
+        emailDiv.append(addressDiv, subjectDiv, timeDiv);
         emailDiv.setAttribute('id', email.id)
         emailDiv.setAttribute('class', 'email-box');
         emailDiv.addEventListener('click', load_email);
 
-        // Check if email is read and add appropriate class
+        // Check if email is read
         if (email.read === true) {
           emailDiv.classList.add('read')
         }
@@ -111,7 +122,7 @@ function send_email() {
   const subject = document.querySelector('#compose-subject');
   const body = document.querySelector('#compose-body');
 
-  // Submit form values for validation and 
+  // Submit form values for validation
   fetch('/emails', {
     method: 'POST',
     body: JSON.stringify({
@@ -168,15 +179,15 @@ function load_email() {
 
       // Email content
       const senderDiv = document.createElement('div');
-      senderDiv.innerHTML = `From: ${data.sender}`;
+      senderDiv.innerHTML = `<b>From:</b> ${data.sender}`;
       const recipientsDiv = document.createElement('div');
-      recipientsDiv.innerHTML = `To: ${data.recipients}`;
-      const timeDiv = document.createElement('div');
-      timeDiv.innerHTML = data.timestamp;
+      recipientsDiv.innerHTML = `<b>To:</b> ${data.recipients}`;
       const subjectDiv = document.createElement('div');
-      subjectDiv.innerHTML = `Subject: ${data.subject}`;
+      subjectDiv.innerHTML = `<b>Subject:</b> ${data.subject}`;
+      const timeDiv = document.createElement('div');
+      timeDiv.innerHTML = `${data.timestamp},<hr>`;
       const bodyDiv = document.createElement('div');
-      bodyDiv.innerHTML = data.body;
+      bodyDiv.innerHTML = `${data.body},<hr>`;
 
       // Archive/Unarchive button
       const archButton = document.createElement('button');
@@ -201,7 +212,7 @@ function load_email() {
       replyButton.innerHTML = 'Reply';
 
       // Add to page
-      emailPage.append(archButton, senderDiv, recipientsDiv, timeDiv, subjectDiv, bodyDiv, replyButton);
+      emailPage.append(archButton, senderDiv, recipientsDiv, subjectDiv, timeDiv, bodyDiv, replyButton);
       readView.append(emailPage);
 
       // Mark email as read
@@ -260,7 +271,7 @@ function archive(emailID) {
 };
 
 function reply(emailID) {
-/* Load the new email composition form, but pre-fill inputs */
+/* Load the new email composition form, pre-fill inputs */
 
   // Grab email
   fetch(`/emails/${emailID}`)

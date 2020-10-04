@@ -2,13 +2,33 @@ textarea {
     min-height: 400px;
 }
 
+#view-container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
 .email-box {
-    border-style: solid;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-left-style: solid;
+    padding: 5px;
     cursor: pointer;
+}
+
+.email-box:last-child {
+    border-bottom-style: solid;
 }
 
 .email-box:hover {
     background-color: rgb(137, 195, 241);
+}
+
+.email-box > .address {
+    padding-right: 15px;
+}
+
+.email-box > .time {
+    float: right;
 }
 
 .read {
