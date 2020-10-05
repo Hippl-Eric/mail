@@ -234,9 +234,7 @@ function load_email() {
 function archive(emailID) {
   /* Toggle an emails archive state and update archive button */
 
-  const btn = document.querySelector('#archive-btn');
-
-  // Determine if email is archived and toggle button label
+  // Determine if email is archived
   fetch(`/emails/${emailID}`)
   .then(response => response.json())
   .then(data => {
@@ -249,13 +247,6 @@ function archive(emailID) {
     // Success
     else {
 
-      if (data.archived == true) {
-        btn.innerHTML = 'Archive';
-      }
-      else {
-        btn.innerHTML = "Unarchive";
-      };
-      
       // Update email's archive bool
       return fetch(`/emails/${emailID}`, {
         method: 'PUT',
@@ -264,6 +255,9 @@ function archive(emailID) {
         })
       });
     };
+  })
+  .then( () => {
+    load_mailbox('inbox');
   })
   .catch(error => {
     console.error(error);
