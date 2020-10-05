@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#compose').addEventListener('click', () => compose_email());
 
   // Call send_email rather than submit compose form
   document.querySelector('#compose-form').onsubmit = function() {
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function show_view(idView) {
 /* Helper function to display specified view and hide other views*/
 
-  allViews = document.getElementById('view-container').children;
+  const allViews = document.getElementById('view-container').children;
   for (const view of allViews) {
     if (view.id === idView) {
       view.style.display = 'block';
@@ -40,7 +40,7 @@ function compose_email() {
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  document.querySelector('#compose-body').innerHTML = '';
 };
 
 function load_mailbox(mailbox) {
@@ -286,18 +286,18 @@ function reply(emailID) {
     // Success
     else {
 
+      // Show compose view and hide other views
+      show_view('compose-view');
+
       // Pre-fill the "To:" field
-      document.querySelector('#compose-recipients').setAttribute('value', data.sender);
+      document.querySelector('#compose-recipients').value = data.sender;
 
       // Pre-fill the "Subject" field
-      document.querySelector('#compose-subject').setAttribute('value', `RE: ${data.subject.replace("RE: ", "")}`);
+      document.querySelector('#compose-subject').value = `RE: ${data.subject.replace("RE: ", "")}`;
 
       // Load previous message in body field
       const bodyVal = `On ${data.timestamp} ${data.sender} wrote:\n${data.body}\n\n`;
       document.querySelector('#compose-body').innerHTML = bodyVal;
-
-      // Show compose view and hide other views
-      show_view('compose-view');
     };
   })
   .catch(error => {
